@@ -31,7 +31,7 @@ public class TextRenderer3D : MonoBehaviour
 
     [SerializeField] private Material defaultMat;
     public List<GameObject> usedLetters;
-    [HideInInspector] public string text;
+    [HideInInspector] public string text = "";
 
     private void Start()
     {
@@ -47,32 +47,46 @@ public class TextRenderer3D : MonoBehaviour
                 TextRenderer3DManager.Instance.GetLetters();
             }
 
-#endif
+            #endif
+    }
+
+    private void OnEnable()
+    {
+        Undo.undoRedoEvent += OnUndo;
+    }
+    
+    private void OnDisable()
+    {
+        Undo.undoRedoEvent -= OnUndo;
     }
 
     private void Update()
     {
         if (lastSpacing == spacing && startingRotation == lastRotation) return;
+        if (usedLetters == null)
+        {
+            usedLetters = new List<GameObject>();
+        }
         CreateLetters();
         lastSpacing = spacing;
         lastRotation = startingRotation;
     }
 
     public void CreateLetters()
-    {
-        var startingScale = transform.localScale;
-        transform.localScale = Vector3.one;
-        for (var i = usedLetters.Count - 1; i >= 0; i--) //Cleanup
+    {for (var i = usedLetters.Count - 1; i >= 0; i--) //Cleanup
         {
             try //This helps the undo
             {
-                Undo.DestroyObjectImmediate(usedLetters[i]); 
+                Undo.DestroyObjectImmediate(usedLetters[i]);
             }
             catch{/*ignored*/}
         }
         
         usedLetters.Clear();
-
+        
+        var startingScale = transform.localScale;
+        transform.localScale = Vector3.one;
+        
         text = allLowerCase ? text.ToLower() : allCaps ? text.ToUpper() : text;
 
         var previousLetter = gameObject;
@@ -102,7 +116,6 @@ public class TextRenderer3D : MonoBehaviour
                 , transform.position
                 ,  transform.localRotation);
             
-            Undo.RegisterCreatedObjectUndo(current, "Object" + i);
             
             current.transform.SetParent(transform);
 
@@ -123,6 +136,8 @@ public class TextRenderer3D : MonoBehaviour
             mesh.sharedMaterial = defaultMat;
             
             usedLetters.Add(current);
+            
+            Undo.RegisterCreatedObjectUndo(current, "Object" + i);
 
             previousLetter = current;
         }
@@ -135,12 +150,32 @@ public class TextRenderer3D : MonoBehaviour
         transform.localScale = startingScale;
     }
 
-    private void OnDestroy()
+    private void GetLettersAfterUndo()
     {
-        for (var i = usedLetters.Count - 1; i >= 0; i--) //Cleanup
+        var current = 0;
+        
+        for (int i = 0; i < transform.childCount && current < text.Length; i++)
         {
-            Undo.DestroyObjectImmediate(usedLetters[i]);
-            usedLetters.Remove(usedLetters[i]);
+            var child = transform.GetChild(i);
+            if (child.name.Substring(0,1) == text[current].ToString())
+            {
+                if (current < usedLetters.Count)
+                {
+                    usedLetters[i] = child.gameObject;
+                }
+                else
+                {
+                    usedLetters.Add(child.gameObject);
+                }
+                
+                current++;
+                i = 0;
+            }
         }
+    }
+
+    private void OnUndo(in UndoRedoInfo uRInfo)
+    {
+        GetLettersAfterUndo();
     }
 }

@@ -1,6 +1,6 @@
 # TextRenderer3D Unity Package
 
-The TextRenderer3D package provides a convenient way to generate 3D text in Unity using a set of customizable models.
+The TextRenderer3D package provides a convenient way to generate 3D text in Unity using a set of .obj models.
 
 ## Features
 
@@ -25,7 +25,7 @@ The TextRenderer3D package provides a convenient way to generate 3D text in Unit
 
 ## Usage
 
-The specified 3D text will be generated in the editor using the provided models (the default ones if no additional models are available).
+The specified 3D text will be generated in the editor using the provided models (the default ones if no additional models are set).
 
 ## Folder Structure
 
