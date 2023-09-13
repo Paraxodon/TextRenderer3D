@@ -115,7 +115,9 @@ public class TextRenderer3D : MonoBehaviour
             var current = Instantiate(TextRenderer3DManager.Instance.GetLetter(text[i])
                 , transform.position
                 ,  transform.localRotation);
+
             
+            if (current == null) return;
             
             current.transform.SetParent(transform);
 
@@ -157,6 +159,9 @@ public class TextRenderer3D : MonoBehaviour
         for (int i = 0; i < transform.childCount && current < text.Length; i++)
         {
             var child = transform.GetChild(i);
+            
+            if (string.IsNullOrWhiteSpace(text[current].ToString())) continue;
+            
             if (child.name.Substring(0,1) == text[current].ToString())
             {
                 if (current < usedLetters.Count)
