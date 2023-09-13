@@ -10,7 +10,6 @@ using UnityEditor;
 [ExecuteInEditMode]
 public class TextRenderer3DManager : MonoBehaviour
 {
-    #if UNITY_EDITOR
     public static TextRenderer3DManager Instance;
     
     [SerializeField] private string textMeshesFolder = "TextModels";
@@ -84,5 +83,4 @@ public class TextRenderer3DManager : MonoBehaviour
         
         return null;
     }
-    #endif
 }

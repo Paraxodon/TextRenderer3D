@@ -35,19 +35,16 @@ public class TextRenderer3D : MonoBehaviour
 
     private void Start()
     {
-        #if UNITY_EDITOR
-            if (TextRenderer3DManager.Instance == null)
-            {
-                GameObject gO = new GameObject("TextRenderer3DManager");
-                var textRenderer = gO.AddComponent<TextRenderer3DManager>();
-                textRenderer.GetLetters();
-            }
-            else if(!TextRenderer3DManager.Instance.hasLetters)
-            {
-                TextRenderer3DManager.Instance.GetLetters();
-            }
-
-            #endif
+        if (TextRenderer3DManager.Instance == null)
+        {
+            GameObject gO = new GameObject("TextRenderer3DManager");
+            var textRenderer = gO.AddComponent<TextRenderer3DManager>();
+            textRenderer.GetLetters();
+        }
+        else if(!TextRenderer3DManager.Instance.hasLetters)
+        {
+            TextRenderer3DManager.Instance.GetLetters();
+        }
     }
 
     private void OnEnable()
