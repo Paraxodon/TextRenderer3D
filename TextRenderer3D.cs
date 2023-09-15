@@ -8,10 +8,12 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class TextRenderer3D : MonoBehaviour
 {
+    public bool centered = false;
     public bool allCaps;
     public bool allLowerCase = true;
 
     [Space(30)] 
+    
     
     public float spacing = 3.5f;
 
@@ -93,7 +95,9 @@ public class TextRenderer3D : MonoBehaviour
 
         text = allLowerCase ? text.ToLower() : allCaps ? text.ToUpper() : text;
 
-        var previousLetter = gameObject;
+        var initialPos = centered ? (gameObject.transform.right * -text.Length / 2 * 3.5f) : Vector3.zero;
+
+        var previousLetterTransform = gameObject.transform.position + initialPos;
 
         for (var i = 0; i < text.Length; i++) //Cleanup
         {
@@ -128,7 +132,7 @@ public class TextRenderer3D : MonoBehaviour
 
             current.transform.SetParent(transform);
 
-            current.transform.position = previousLetter.transform.position +
+            current.transform.position = previousLetterTransform +
                                               transform.right * usedSpacing * (i == 0 ? 0 : 1);
 
             current.transform.localScale = transform.localScale;
@@ -147,8 +151,8 @@ public class TextRenderer3D : MonoBehaviour
             usedLetters.Add(current);
             
             Undo.RegisterCreatedObjectUndo(current, "Object" + i);
-
-            previousLetter = current;
+            
+            previousLetterTransform = current.transform.position;
         }
 
         foreach (var lett in usedLetters)
