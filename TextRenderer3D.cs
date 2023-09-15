@@ -121,7 +121,7 @@ public class TextRenderer3D : MonoBehaviour
                 , transform.rotation);
 
 
-            if (current == null){
+            if (current.name == ""){
                 DestroyImmediate(current);
                 return;
             }
