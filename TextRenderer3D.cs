@@ -111,7 +111,7 @@ public class TextRenderer3D : MonoBehaviour
 
             var current = Instantiate(TextRenderer3DManager.Instance.GetLetter(text[i])
                 , transform.position
-                ,  transform.localRotation);
+                ,  transform.rotation);
 
             
             if (current == null){
