@@ -80,18 +80,25 @@ public class TextRenderer3D : MonoBehaviour
         }
         
         usedLetters.Clear();
+
+        var transformsToModify = new List<(Transform, Vector3)>();
+        var currentParent = transform;
+        while (currentParent.parent != null)
+        {
+            transformsToModify.Add((currentParent, currentParent.localScale));
+            currentParent.localScale = Vector3.one;
+            currentParent = currentParent.parent;
+        }
         
-        var startingScale = transform.localScale;
-        transform.localScale = Vector3.one;
-        
+
         text = allLowerCase ? text.ToLower() : allCaps ? text.ToUpper() : text;
 
         var previousLetter = gameObject;
-        
+
         for (var i = 0; i < text.Length; i++) //Cleanup
         {
             var prev = i > 0 ? text[i - 1].ToString() : null;
-            
+
             if (string.IsNullOrWhiteSpace(text[i].ToString()))
             {
                 prev = " ";
@@ -111,14 +118,14 @@ public class TextRenderer3D : MonoBehaviour
 
             var current = Instantiate(TextRenderer3DManager.Instance.GetLetter(text[i])
                 , transform.position
-                ,  transform.rotation);
+                , transform.rotation);
 
-            
+
             if (current == null){
                 DestroyImmediate(current);
-            return;
+                return;
             }
-            
+
             current.transform.SetParent(transform);
 
             current.transform.position = previousLetter.transform.position +
@@ -148,8 +155,12 @@ public class TextRenderer3D : MonoBehaviour
         {
             Undo.RegisterCompleteObjectUndo(lett, "List");
         }
-        
-        transform.localScale = startingScale;
+
+        foreach (var scale in transformsToModify)
+        {
+            scale.Item1.localScale = scale.Item2;
+        }
+        transformsToModify.Clear();
     }
 
     private void GetLettersAfterUndo()
@@ -164,7 +175,7 @@ public class TextRenderer3D : MonoBehaviour
             
             if (child.name.Substring(0,1) == text[current].ToString())
             {
-                if (usedLetters != null && current < usedLetters.Count)
+                if (usedLetters != null && i < usedLetters.Count && current < usedLetters.Count)
                 {
                     usedLetters[i] = child.gameObject;
                 }
