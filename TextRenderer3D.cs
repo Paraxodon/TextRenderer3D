@@ -164,11 +164,11 @@ public class TextRenderer3D : MonoBehaviour
             
             if (child.name.Substring(0,1) == text[current].ToString())
             {
-                if (current < usedLetters.Count && usedLetters[i] != null)
+                if (usedLetters != null && current < usedLetters.Count)
                 {
                     usedLetters[i] = child.gameObject;
                 }
-                else if (current >= usedLetters.Count)
+                else
                 {
                     usedLetters.Add(child.gameObject);
                 }
