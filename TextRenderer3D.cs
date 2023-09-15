@@ -171,7 +171,7 @@ public class TextRenderer3D : MonoBehaviour
         {
             var child = transform.GetChild(i);
             
-            if (string.IsNullOrWhiteSpace(text[current].ToString())) continue;
+            if (text[current].ToString() != "0" && string.IsNullOrWhiteSpace(text[current].ToString())) continue;
             
             if (child.name.Substring(0,1) == text[current].ToString())
             {
