@@ -114,7 +114,10 @@ public class TextRenderer3D : MonoBehaviour
                 ,  transform.localRotation);
 
             
-            if (current == null) return;
+            if (current == null){
+                DestroyImmediate(current);
+            return;
+            }
             
             current.transform.SetParent(transform);
 
